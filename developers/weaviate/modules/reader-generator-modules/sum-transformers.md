@@ -28,7 +28,7 @@ and transform it to a short sentence like this:
 > <em>"The Eiffel Tower is a landmark in Paris, France."</em>
 
 :::note GPUs preferred
-For maximum performance of your queries, transformer-based models should run with GPUs.
+For maximum querying performance, transformer-based models should run with GPUs.
 CPUs can be used, however, this will significantly slow down your queries.
 :::
 
@@ -92,15 +92,16 @@ Variable explanations:
 
 ## How to use (GraphQL)
 
-To make use of the modules capabilities, extend your query with the following new `_additional` property:
+To make use of the module's capabilities, extend your query with the following new `_additional` property:
 
 ### GraphQL Token
 
 This module adds a search filter to the GraphQL `_additional` field in queries: `summary{}`. This new filter takes the following arguments:
 
-| Field 	| Data Type 	| Required 	| Example value 	| Description 	|
-|-	|-	|-	|-	|-	|
-| `properties` 	| list of strings 	| yes 	| `["description"]` 	| The properties of the queries Class which contains text (`text` or `string` Datatype). You must provide at least one property	|
+| Field | Data Type | Required | Example value | Description |
+| ----- | --------- | -------- | ------------- | ----------- |
+| `properties` | list of strings | yes | `["description"]` | The properties of the queries Class which contains text (`text` or `string` Datatype). You must provide at least one property. |
+
 
 ### Example query
 

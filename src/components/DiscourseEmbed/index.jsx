@@ -5,6 +5,7 @@ export function DiscourseEmbed() {
   useEffect(() => {
     window.DiscourseEmbed = {
       discourseUrl: 'https://forum.weaviate.io/',
+      discourseEmbedUrl: window.location.href,
     };
 
     const d = document.createElement('script');
