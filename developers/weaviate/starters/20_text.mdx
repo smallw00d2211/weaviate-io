@@ -1,5 +1,5 @@
 ---
-title: Text collections
+title: Working with text data
 image: og/docs/tutorials.jpg
 # tags: ['tutorials', 'text', 'getting started']
 ---
@@ -11,6 +11,130 @@ import PyCode from '!!raw-loader!/_includes/code/howto/manage-data.create.py';
 import TSCode from '!!raw-loader!/_includes/code/howto/manage-data.create.ts';
 
 ## Overview
+
+This page will show you how to use Weaviate with text data. In this guide, we will use a Wikipedia article as an example, and show you how to build a Weaviate database, ingest the data as well as to query it with Weaviate.
+
+We will cover:
+
+- [Configuring Weaviate](#configuring-weaviate) to work with text data
+- [Creating a collection (class)](#creating-a-collection-class) of text objects
+- [Adding text objects](#adding-objects-to-weaviate) to Weaviate
+- [Searching for text objects](#searching-text-objects) in Weaviate
+
+Building on from the [Quickstart tutorial](../quickstart/index.md), we will:
+
+- Cover more of the options in depth, and
+- Point you to various resources where appropriate.
+
+:::tip Prerequisites
+If you haven't already, please complete the [Quickstart tutorial](../quickstart/index.md) before you work through this guide.
+:::
+
+<!-- ## Key considerations
+
+For using Weaviate with text data, the following considerations may be important. We will cover each of these as we progress in this guide.
+
+### Vectorization
+
+- Will you use Weaviate or bring your own vectors?
+- If you use Weaviate, what module and model will you use?
+
+### Base content
+
+- What parts of the text will be vectorized?
+- E.g.: Will you vectorize the whole text, or just the title?
+
+### Data structure
+
+- How will the text be structured?
+    - Will you use a single text property, or multiple fields?
+    - How will each text property be tokenized?
+
+### Search
+
+- How will you search the text?
+- What quantum of text do you want to retrieve? -->
+
+
+## Building a text database with Weaviate
+
+### How to run Weaviate
+
+For this guide, we recommend that you run Weaviate through WCS. This will allow you to get started quickly, and to focus on the text-specific aspects of Weaviate with an inference-API vectorizer.
+
+:::info Alternatives
+- Any of other [installation options](../installation/index.md) are also suitable.
+- If you want to vectorize data locally using `text2vec-transformers`, you can use the [Docker-compose installation](../installation/docker-compose.md) or [Embedded Weaviate](../installation/embedded.md).
+:::
+
+### Which vectorizer to use?
+
+As you saw in the Quickstart, you can ask Weaviate to vectorize data at object creation or import time, or you can bring your own vectors.
+
+In this guide, we will use a Weaviate vectorizer module to vectorize text data.
+
+Weaviate modules for vectorizing text data are called `text2vec` modules. We will use `text2vec-cohere` in this guide. This module uses the [Cohere API](https://cohere.ai/) to generate vectors for text data.
+
+:::info Alternatives
+You can use any `text2vec` modules instead.
+
+<br/>
+<details>
+  <summary>How do I do that?</summary>
+
+
+You can choose any module as appropriate for your use case.
+<br/>
+
+Some of them, such as `text2vec-huggingface`, `text2vec-cohere` or `text2vec-openai`, generate vectors through an external API. Others, such as `text2vec-transformers`, or `text2vec-contextionary`, generate vectors locally.
+<br/>
+
+For example, you can use `text2vec-transformers` to generate vectors locally. If doing so, replace settings as appropriate where you see `text2vec-cohere`.
+<br/>
+
+To check what modules are available in your Weaviate instance, you can run:
+
+
+<Tabs groupId="languages">
+<TabItem value="py" label="Python">
+
+```python
+client.get_meta()
+```
+
+</TabItem>
+</Tabs>
+
+If your preferred module is not enabled, you can enable modules through the respective configuration means, such as `docker-compose.yaml` for Docker-based deployment. See the respective [installation guide](../installation/index.md) for details.
+
+</details>
+
+:::
+
+### Create a collection (class)
+
+Next, you should def
+ine a collection (class) for your text objects. In the class definition, you can specify:
+- The metadata for your class and properties, and
+- Their behaviors and settings, such as vectorization and indexing settings.
+
+For this guide, we will use the following class definition:
+
+```json
+{
+
+}
+```
+
+### Adding objects to Weaviate
+
+### Searching text objects
+
+## More Resources
+
+import DocsMoreResources from '/_includes/more-resources-docs.md';
+
+<DocsMoreResources />
 
 
 

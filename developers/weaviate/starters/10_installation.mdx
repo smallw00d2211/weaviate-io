@@ -10,11 +10,118 @@ import FilteredTextBlock from '@site/src/components/Documentation/FilteredTextBl
 import PyCode from '!!raw-loader!/_includes/code/howto/manage-data.create.py';
 import TSCode from '!!raw-loader!/_includes/code/howto/manage-data.create.ts';
 
-## Available options
+## Overview
+
+Weaviate can be configured and deployed in many different ways. This page suggests some setups for different scenarios.
+
+:::tip Use a Weaviate client library
+In all cases, we recommend using Weaviate client libraries to interact with your Weaviate instance.
+:::
 
 
+## High-level comparisons
 
-## Key considerations
+Depending on your aim, you may want to use Weaviate in a different way. The table below suggests a high-level overview of the different options.
+
+|     | Embedded | WCS | Docker | Kubernetes | Hybrid SaaS |
+| --- | --- | --- | --- | --- | --- |
+| Quick evaluation | <i class="fa-solid fa-square-check"></i> | <i class="fa-solid fa-square-check"></i> <small>(Sandbox)</small> | <i class="fa-solid fa-check"></i> | <i class="fa-solid fa-xmark"></i> | <i class="fa-solid fa-xmark"></i> |
+| Development | <i class="fa-solid fa-check"></i> | <i class="fa-solid fa-square-check"></i> | <i class="fa-solid fa-square-check"></i>| <i class="fa-solid fa-xmark"></i> | <i class="fa-solid fa-xmark"></i> |
+| Production use | <i class="fa-solid fa-xmark"></i> | <i class="fa-solid fa-square-check"></i> <small>(SLA tiers)</small> | <i class="fa-solid fa-xmark"></i>| <i class="fa-solid fa-square-check"></i> | <i class="fa-solid fa-square-check"></i> |
 
 
+- <i class="fa-solid fa-square-check"></i>: <small>Recommended</small>
+- <i class="fa-solid fa-check"></i>: <small>Option</small>
+- <i class="fa-solid fa-xmark"></i>: <small>Not recommended</small>
 
+## Suggested setups
+
+### For evaluation: WCS / Embedded
+
+You can get going in just minutes with:
+
+- A free Weaviate Cloud Services (WCS) sandbox instance, or
+- Embedded Weaviate.
+
+:::note WCS sandboxes will expire in 14 days.
+:::
+
+And an inference-API based vectorizer (e.g. `text2vec-cohere`, `text2vec-huggingface` or `text2vec-openai`).
+
+:::tip Start here:
+- [Installation/WCS](../installation/weaviate-cloud-services.md)
+- [Installation/Embedded](../installation/embedded.md)
+:::
+
+### For development: Docker / WCS
+
+Using Weaviate open source with **Docker** will allow you to configure Weaviate the way you want, while still being easy to set up.
+
+Alternatively, using a paid **WCS** instance may be another convenient option, although you should keep in mind that it will not be as flexible. For example, you will not be able to enable certain modules, such as to use a local vectorizer.
+
+:::tip Start here:
+- [Installation/Docker](../installation/docker-compose.md)
+- [Installation/WCS](../installation/weaviate-cloud-services.md)
+:::
+
+### For production use: WCS / Kubernetes / Hybrid SaaS
+
+Using **WCS** with a paid SLA tier is a convenient option for production use that will be easy to get going with. It also means you do not have to manage your infrastructure.
+
+Alternatively, you can also use Weaviate open source and deploy it with **Kubernetes**. This will allow you to configure Weaviate the way you want, and leverage Kubernetes' devops capabilities.
+
+Last but not least, we offer what we call **Hybrid SaaS** options for our customers. This means that we will deploy Weaviate on your infrastructure, and manage it for you. This is a good option if you want to use Weaviate in production, but do not want to manage it yourself.
+
+:::tip Start here:
+- [Installation/WCS](../installation/weaviate-cloud-services.md)
+- [Installation/Kubernetes](../installation/kubernetes.md)
+- [Contact us about Hybrid SaaS](/pricing#contact-sales)
+:::
+
+<!-- ## Comparison tables
+
+### Features
+
+| | | Embedded Weaviate  | WCS | Docker | Kubernetes | Hybrid SaaS |
+| --- | --- | --- | --- | --- | --- | --- |
+| **Ease of use** | Easiest for evaluation | <i class="fa-solid fa-square-check"></i> | <i class="fa-solid fa-square-check"></i> | <i class="fa-solid fa-xmark"></i> | <i class="fa-solid fa-xmark"></i>| <i class="fa-solid fa-xmark"></i> |
+| **Production-use** | Recommended for production use | <i class="fa-solid fa-xmark"></i> | <i class="fa-solid fa-square-check"></i> | <i class="fa-solid fa-xmark"></i> | <i class="fa-solid fa-square-check"></i>| <i class="fa-solid fa-square-check"></i> |
+| **Vectorization** | Bring your own vectors | <i class="fa-solid fa-square-check"></i> | <i class="fa-solid fa-square-check"></i> | <i class="fa-solid fa-square-check"></i> | <i class="fa-solid fa-square-check"></i>| <i class="fa-solid fa-square-check"></i> |
+| | Vectorizer modules | <i class="fa-solid fa-square-check"></i>*<br/> <small>(Local vectorizers unavailable)</small> | <i class="fa-solid fa-square-check"></i>*<br/> <small>(Local vectorizers unavailable)</small> | <i class="fa-solid fa-square-check"></i> | <i class="fa-solid fa-square-check"></i> | <i class="fa-solid fa-square-check"></i> |
+| | Generator / QnA / NER / Summarization modules | <i class="fa-solid fa-square-check"></i>*<br/> <small>(Local models unavailable)</small> | <i class="fa-solid fa-square-check"></i>*<br/> <small>(Local models unavailable)</small> | <i class="fa-solid fa-square-check"></i> | <i class="fa-solid fa-square-check"></i> | <i class="fa-solid fa-square-check"></i> |
+| **Customize module list** | | <i class="fa-solid fa-square-check"></i> | <i class="fa-solid fa-xmark"></i> | <i class="fa-solid fa-square-check"></i> | <i class="fa-solid fa-square-check"></i> | <i class="fa-solid fa-square-check"></i> |
+| **Backup available** | | <i class="fa-solid fa-square-check"></i> | <i class="fa-solid fa-square-check"></i> (WCS-driven) | <i class="fa-solid fa-square-check"></i> | <i class="fa-solid fa-square-check"></i> |<i class="fa-solid fa-square-check"></i> |
+| **Security** | Authentication | <i class="fa-solid fa-xmark"></i> | <i class="fa-solid fa-square-check"></i> | <i class="fa-solid fa-square-check"></i> | <i class="fa-solid fa-square-check"></i> | <i class="fa-solid fa-square-check"></i> |
+| | Authorization | <i class="fa-solid fa-xmark"></i> | <i class="fa-solid fa-square-check"></i> | <i class="fa-solid fa-square-check"></i> | <i class="fa-solid fa-square-check"></i> | <i class="fa-solid fa-square-check"></i> |
+| **Deployment** | Single node | <i class="fa-solid fa-xmark"></i> | <i class="fa-solid fa-square-check"></i> | <i class="fa-solid fa-square-check"></i> | <i class="fa-solid fa-square-check"></i> |<i class="fa-solid fa-square-check"></i> |
+| | Multi-node | <i class="fa-solid fa-xmark"></i> | <i class="fa-solid fa-square-check"></i> | <i class="fa-solid fa-square-check"></i> | <i class="fa-solid fa-square-check"></i> | <i class="fa-solid fa-square-check"></i> |
+| **Scalability** | Horizontal scaling | <i class="fa-solid fa-xmark"></i> | <i class="fa-solid fa-square-check"></i> | <i class="fa-solid fa-xmark"></i> | <i class="fa-solid fa-square-check"></i> | <i class="fa-solid fa-square-check"></i> |
+| **Replication** | | <i class="fa-solid fa-xmark"></i> | <i class="fa-solid fa-square-check"></i> | <i class="fa-solid fa-square-check"></i> | <i class="fa-solid fa-square-check"></i> | <i class="fa-solid fa-square-check"></i> |
+
+### By medium & vectorization method
+
+|     | Embedded | WCS | Docker | Kubernetes | Hybrid SaaS |
+| --- | --- | --- | --- | --- | --- |
+| Bring your own vector | <i class="fa-solid fa-square-check"></i> | <i class="fa-solid fa-square-check"></i> | <i class="fa-solid fa-square-check"></i> | <i class="fa-solid fa-square-check"></i> | <i class="fa-solid fa-square-check"></i> |
+| Vectorize text with Weaviate | <i class="fa-solid fa-square-check"></i> | <i class="fa-solid fa-square-check"></i> | <i class="fa-solid fa-square-check"></i> | <i class="fa-solid fa-square-check"></i> | <i class="fa-solid fa-square-check"></i> |
+| Vectorize images with Weaviate | <i class="fa-solid fa-square-check"></i> | <i class="fa-solid fa-xmark"></i> | <i class="fa-solid fa-square-check"></i> | <i class="fa-solid fa-square-check"></i> | <i class="fa-solid fa-square-check"></i> |
+| Local vectorizer | <i class="fa-solid fa-square-check"></i> | <i class="fa-solid fa-xmark"></i> | <i class="fa-solid fa-square-check"></i> | <i class="fa-solid fa-square-check"></i> | <i class="fa-solid fa-square-check"></i> |
+| API-based vectorizer | <i class="fa-solid fa-square-check"></i> | <i class="fa-solid fa-xmark"></i> | <i class="fa-solid fa-square-check"></i> | <i class="fa-solid fa-square-check"></i> | <i class="fa-solid fa-square-check"></i> |
+
+### Module availability
+| Modality | Model | Embedded Weaviate  | WCS | Docker | Kubernetes | Hybrid SaaS |
+| --- | --- | --- | --- | --- | --- | --- |
+| **Text** | <code>text2vec-cohere</code> | <i class="fa-solid fa-square-check"></i> | <i class="fa-solid fa-square-check"></i> | <i class="fa-solid fa-square-check"></i> | <i class="fa-solid fa-square-check"></i> | <i class="fa-solid fa-square-check"></i> |
+| | <code>text2vec-huggingface</code> | <i class="fa-solid fa-square-check"></i> | <i class="fa-solid fa-square-check"></i> | <i class="fa-solid fa-square-check"></i> | <i class="fa-solid fa-square-check"></i> | <i class="fa-solid fa-square-check"></i> |
+| | <code>text2vec-openai</code> | <i class="fa-solid fa-square-check"></i> | <i class="fa-solid fa-square-check"></i> | <i class="fa-solid fa-square-check"></i> | <i class="fa-solid fa-square-check"></i> | <i class="fa-solid fa-square-check"></i> |
+| | <code>text2vec-palm</code> | <i class="fa-solid fa-square-check"></i> | <i class="fa-solid fa-square-check"></i> | <i class="fa-solid fa-square-check"></i> | <i class="fa-solid fa-square-check"></i> | <i class="fa-solid fa-square-check"></i> |
+| | <code>text2vec-transformers</code> | <i class="fa-solid fa-xmark"></i> | <i class="fa-solid fa-xmark"></i> | <i class="fa-solid fa-square-check"></i> | <i class="fa-solid fa-square-check"></i> | <i class="fa-solid fa-square-check"></i> |
+| | <code>text2vec-transformers</code> | <i class="fa-solid fa-xmark"></i> | <i class="fa-solid fa-xmark"></i> | <i class="fa-solid fa-square-check"></i> | <i class="fa-solid fa-square-check"></i> | <i class="fa-solid fa-square-check"></i> |
+
+ -->
+
+## More Resources
+
+import DocsMoreResources from '/_includes/more-resources-docs.md';
+
+<DocsMoreResources />
