@@ -1,0 +1,103 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import FilteredTextBlock from '@site/src/components/Documentation/FilteredTextBlock';
+import EndToEndPyCode from '!!raw-loader!/_includes/code/quickstart.autoschema.endtoend.py';
+import EndToEndTSCode from '!!raw-loader!/_includes/code/quickstart.autoschema.endtoend.ts';
+
+<Tabs groupId="languages">
+<TabItem value="py" label="Python">
+
+```python
+import weaviate
+
+client = weaviate.Client(
+    url = "https://some-endpoint.weaviate.network",  # Replace with your endpoint
+    auth_client_secret=weaviate.AuthApiKey(api_key="YOUR-WEAVIATE-API-KEY"),  # Replace w/ your Weaviate instance API key. You can remove this line if you connect to a local Docker instance.
+)
+```
+
+</TabItem>
+<TabItem value="ts" label="TypeScript">
+
+```ts
+import weaviate, { WeaviateClient, ObjectsBatcher, ApiKey } from 'weaviate-ts-client';
+
+const client: WeaviateClient = weaviate.client({
+  scheme: 'https',
+  host: 'some-endpoint.weaviate.network',  // Replace with your endpoint
+  apiKey: new ApiKey('YOUR-WEAVIATE-API-KEY'),  // Replace w/ your Weaviate instance API key
+});
+```
+
+</TabItem>
+<TabItem value="go" label="Go">
+
+```go
+package main
+
+import (
+  "context"
+
+  "github.com/weaviate/weaviate-go-client/v4/weaviate"
+  "github.com/weaviate/weaviate-go-client/v4/weaviate/auth"
+  "github.com/weaviate/weaviate/entities/models"
+)
+
+func main() {
+  cfg := weaviate.Config{
+    Host:   "some-endpoint.weaviate.network/",  // Replace with your endpoint
+    Scheme: "https",
+    AuthConfig: auth.ApiKey{Value: "YOUR-WEAVIATE-API-KEY"}, // Replace w/ your Weaviate instance API key
+  }
+
+  client, err := weaviate.NewClient(cfg)
+  if err != nil {
+      panic(err)
+  }
+
+}
+```
+
+</TabItem>
+{/* <TabItem value="java" label="Java">
+
+```java
+
+package io.weaviate;
+
+import java.util.ArrayList;
+import io.weaviate.client.Config;
+import io.weaviate.client.WeaviateClient;
+import io.weaviate.client.base.Result;
+import io.weaviate.client.v1.schema.model.DataType;
+import io.weaviate.client.v1.schema.model.Property;
+import io.weaviate.client.v1.schema.model.WeaviateClass;
+
+public class App {
+  public static void main(String[] args) {
+    Config config = new Config("https", "some-endpoint.weaviate.network/");  // Replace with your endpoint
+
+    WeaviateClient client = new WeaviateClient(config);
+  }
+}
+```
+
+</TabItem> */}
+<TabItem value="curl" label="Curl">
+
+- With `curl`, add the API key to the header as shown below:
+<br/>
+
+```bash
+echo '{
+  "query": "<QUERY>"
+}' | curl \
+    -X POST \
+    -H "Content-Type: application/json" \
+    -H "Authorization: Bearer YOUR-WEAVIATE-API-KEY" \
+    -d @- \
+    https://some-endpoint.weaviate.network/v1/graphql
+```
+
+</TabItem>
+</Tabs>

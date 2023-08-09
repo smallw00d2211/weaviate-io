@@ -20,16 +20,11 @@ import WCSApiKeyLocation from '../../wcs/img/wcs-apikey-location.png';
 Welcome. Here, you'll get a quick taste of Weaviate in <i class="fa-solid fa-timer"></i> ~20 minutes.
 
 You will:
-- Build a vector database, and
-- Query it with *semantic search*.
-
-:::info Object vectors
-With Weaviate, you have options to:
-- Have **Weaviate create vectors**, or
-- Specify **custom vectors**.
-
-This tutorial demonstrates both methods.
-:::
+- Set up the Weaviate vector database, and
+- Query it with *vector search* based on custom vectors, and,
+- Query it with *filters*.
+- Query it with *semantic search* based on a module.
+- Query it for Retrieval Augmented Generation based on a module.
 
 :::tip For more holistic learning
 Try <i class="fa-solid fa-graduation-cap"></i> [Weaviate Academy](../../academy/index.mdx), where we have built holistic courses for you to learn about Weaviate and the world of vector search.
@@ -37,7 +32,7 @@ Try <i class="fa-solid fa-graduation-cap"></i> [Weaviate Academy](../../academy/
 
 #### Source data
 
-We will use a (tiny) dataset of quizzes.
+We will use a (tiny) dataset of Jeopardy quizzes.
 
 <details>
   <summary>What data are we using?</summary>
@@ -61,53 +56,32 @@ The data comes from a TV quiz show ("Jeopardy!")
 
 <hr/>
 
-## Create an instance
+## Create a Weaviate instance
 
-First, create a Weaviate database.
-
-1. Go to the [WCS Console](https://console.weaviate.cloud), and
-    1. Click <kbd>Sign in with the Weaviate Cloud Services</kbd>.
-    1. If you don't have a WCS account, click on <kbd>Register</kbd>.
-1. Sign in with your WCS username and password.
-1. Click <kbd>Create cluster</kbd>.
-
-:::note <i class="fa-solid fa-camera-viewfinder"></i> <small>To create a WCS instance:</small>
-<img src={WCScreateButton} width="100%" alt="Button to create WCS instance"/>
-:::
+Go to the [WCS Console](https://console.weaviate.cloud), and create an instance as described [here](/developers/weaviate/installation/weaviate-cloud-services). Make sure to collect the **API key** and **URL** from the <kbd>Details</kbd> tab.
 
 <details>
-  <summary>Can I use another method?</summary>
+  <summary>Can I use Docker for this quickstart?</summary>
 
-Yes. If you prefer another method, please see our [installation options](../installation/index.md) page.
+  <p>Yes. You can also use Docker.</p>
+
+  <p>
+    <p>
+      <ul>
+        <li>
+          Download <a href="https://configuration.weaviate.io/v2/docker-compose/docker-compose.yml?generative_cohere=false&generative_openai=true&generative_openai_key_approval=yes&generative_palm=false&media_type=text&modules=modules&ner_module=false&openai_key_approval=yes&qna_module=false&ref2vec_centroid=false&reranker_cohere=false&runtime=docker-compose&spellcheck_module=false&sum_module=false&text_module=text2vec-openai&weaviate_version=v1.20.5" target="_blank">this</a> Docker-compose file.
+        </li>
+        <li>
+          Run the following command: <code>$ docker-compose up -d</code>
+        </li>
+        <li>
+          The end-point you will use later is <code>http://localhost:8080</code>
+        </li>
+      </ul>
+    </p>
+  </p>
 
 </details>
-
-
-Then:
-
-1. Select the <kbd>Free sandbox</kbd> tier.
-1. Provide a *Cluster name*.
-1. Set *Enable Authentication?* to <kbd>YES</kbd>.
-
-:::note <i class="fa-solid fa-camera-viewfinder"></i> <small>Your selections should look like this:</small>
-<img src={WCSoptionsWithAuth} width="100%" alt="Instance configuration"/>
-:::
-
-Click <kbd>Create</kbd>. This will take ~2 minutes and you'll see a tick ✔️ when finished.
-
-#### Note your cluster details
-
-You will need:
-- The Weaviate URL, and
-- Authentication details (Weaviate API key).
-
-Click <kbd>Details</kbd> to see them.
-
-For the Weaviate API key, click on the <kbd><i class="fa-solid fa-key"></i></kbd> button.
-
-:::note <i class="fa-solid fa-camera-viewfinder"></i> <small>Your WCS cluster details should look like this:</small>
-<img src={WCSApiKeyLocation} width="60%" alt="Instance API key location"/>
-:::
 
 <hr/>
 
@@ -127,20 +101,11 @@ import CodeClientInstall from '/_includes/code/quickstart.clients.install.mdx';
 
 ## Connect to Weaviate
 
-From the <kbd>Details</kbd> tab in WCS, get:
-- The Weaviate **API key**, and
-- The Weaviate **URL**.
-
-And because we will use the Hugging Face inference API to generate vectors, you need:
-- A Hugging Face **inference API key** ([instructions](https://huggingface.co/docs/api-inference/quicktour#get-your-api-token)).
-
-So, instantiate the client as follows:
-
-import ConnectToWeaviateWithKey from '/_includes/code/quickstart.autoschema.connect.withkey.mdx'
+import ConnectToWeaviateWithKey from '/_includes/code/installation.connect.withkey.mdx'
 
 <ConnectToWeaviateWithKey />
 
-Now you are connected to your Weaviate instance!
+If you use Docker, you don't have to provide an API-key.
 
 <hr/>
 
@@ -152,117 +117,21 @@ import CodeAutoschemaMinimumSchema from '/_includes/code/quickstart.autoschema.m
 
 <CodeAutoschemaMinimumSchema />
 
-<details>
-  <summary>What if I want to use a different vectorizer module?</summary>
-
-In this example, we use the `Hugging Face` inference API. But you can use others.
-
-:::tip Our recommendation
-Vectorizer selection is a big topic - so for now, we suggest sticking to the defaults and focus on learning the basics of Weaviate.
-:::
-
-If you do want to change the vectorizer, you can - as long as:
-- The module is available in the Weaviate instance you are using, and
-- You have an API key (if necessary) for that module.
-
-Each of the following modules is available in the free sandbox.
-
-- `text2vec-cohere`
-- `text2vec-huggingface`
-- `text2vec-openai`
-- `text2vec-palm`
-
-Depending on your choice, make sure to pass on the API key for the inference service by setting the header with an appropriate line from below, remembering to replace the placeholder with your actual key:
-
-```js
-"X-Cohere-Api-Key": "YOUR-COHERE-API-KEY",  // For Cohere
-"X-HuggingFace-Api-Key": "YOUR-HUGGINGFACE-API-KEY",  // For Hugging Face
-"X-OpenAI-Api-Key": "YOUR-OPENAI-API-KEY",  // For OpenAI
-"X-Palm-Api-Key": "YOUR-PALM-API-KEY",  // For PaLM
-```
-
-Additionally, we also provide suggested `vectorizer` module configurations.
-
-<Tabs groupId="inferenceAPIs">
-<TabItem value="cohere" label="Cohere">
-
-```json
-class_obj = {
-  "class": "Question",
-  "vectorizer": "text2vec-cohere",
-}
-```
-
-</TabItem>
-<TabItem value="huggingface" label="Hugging Face">
-
-```js
-class_obj = {
-  "class": "Question",
-  "vectorizer": "text2vec-huggingface",
-  "moduleConfig": {
-    "text2vec-huggingface": {
-      "model": "sentence-transformers/all-MiniLM-L6-v2",  // Can be any public or private Hugging Face model.
-      "options": {
-        "waitForModel": true,  // Try this if you get a "model not ready" error
-      }
-    }
-  }
-}
-```
-
-</TabItem>
-<TabItem value="openai" label="OpenAI">
-
-```js
-class_obj = {
-  "class": "Question",
-  "vectorizer": "text2vec-openai",
-  "moduleConfig": {
-    "text2vec-openai": {
-      "model": "ada",
-      "modelVersion": "002",
-      "type": "text"
-    }
-  }
-}
-```
-
-</TabItem>
-<TabItem value="palm" label="PaLM">
-
-```js
-class_obj = {
-  "class": "Question",
-  "vectorizer": "text2vec-palm",
-  "moduleConfig": {
-    "text2vec-palm": {
-      "projectId": "YOUR-GOOGLE-CLOUD-PROJECT-ID",    // Required. Replace with your value: (e.g. "cloud-large-language-models")
-      "apiEndpoint": "YOUR-API-ENDPOINT",             // Optional. Defaults to "us-central1-aiplatform.googleapis.com".
-      "modelId": "YOUR-GOOGLE-CLOUD-MODEL-ID",        // Optional. Defaults to "textembedding-gecko".
-    },
-  }
-}
-```
-
-</TabItem>
-</Tabs>
-
-</details>
-
-This creates a class `Question`, tells Weaviate which `vectorizer` to use, and sets the `moduleConfig` for the vectorizer.
-
-:::tip Is a `vectorizer` setting mandatory?
-- No. You always have the option of providing vector embeddings yourself.
-- Setting a `vectorizer` gives Weaviate the option of creating vector embeddings for you.
-    - If you do not wish to, you can set this to `none`.
-:::
+This creates a class `Question`. ​Setting the vectorizer is optional. It's a Weaviate module (in this case `text2vec-openai`) that Weaviate uses to generate embeddings when storing or quering data.
 
 Now you are ready to add objects to Weaviate.
 
 <hr/>
 
-## Add objects
+## Add a single object
+
+We will upload a single data object with an embedding from OpenAI's ada model.
+
+import CodeAutoschemaImportSingleCustomVectors from '/_includes/code/quickstart.autoschema.import.single.custom.vectors.mdx'
+
+<CodeAutoschemaImportSingleCustomVectors />
+
+## Add objects in a batch
 
 We'll add objects to our Weaviate instance using a **batch import** process.
 
@@ -273,27 +142,6 @@ Batch imports provide significantly improved import performance, so you should a
 
 </details>
 
-First, you will use the `vectorizer` to create object vectors.
-
-### *Option 1*: `vectorizer`
-
-The code below imports object data without specifying a vector. This causes Weaviate to use the `vectorizer` defined for the class to create a vector embedding for each object.
-
-import CodeAutoschemaImport from '/_includes/code/quickstart.autoschema.import.mdx'
-
-<CodeAutoschemaImport />
-
-The above code:
-- Loads objects,
-- Initializes a batch process, and
-- Adds objects to the target class (`Question`) one by one.
-
-### *Option 2*: Custom `vector`s
-
-Alternatively, you can also provide your own vectors to Weaviate.
-
-Regardless of whether a `vectorizer` is set, if a vector is specified, Weaviate will use it to represent the object.
-
 import CodeAutoschemaImportCustomVectors from '/_includes/code/quickstart.autoschema.import.custom.vectors.mdx'
 
 <CodeAutoschemaImportCustomVectors />
@@ -303,7 +151,7 @@ import CodeAutoschemaImportCustomVectors from '/_includes/code/quickstart.autosc
 
 Note that you can specify a `vectorizer` and still provide a custom vector. In this scenario, make sure that the vector comes from the same model as one specified in the `vectorizer`. <p><br/></p>
 
-In this tutorial, they come from `sentence-transformers/all-MiniLM-L6-v2` - the same as specified in the vectorizer configuration.
+In this tutorial, they come from OpenAI's Ada2 model - the same as specified in the vectorizer configuration.
 
 </details>
 
@@ -335,9 +183,23 @@ Congratulations, you've successfully built a vector database!
 
 ## Queries
 
-Now, we can run queries.
+Now, we can run queries!
+
+### Vector search
+
+This is a pure vector search, it takes an embedding as input and conducts a similarity search. This is ideal if you generate your embeddings outside of Weaviate.
+
+import CodeAutoschemaPureVector from '/_includes/code/quickstart.autoschema.purevector.mdx'
+
+<CodeAutoschemaPureVector />
+
+### Vector search with a filter
+
+...
 
 ### Semantic search
+
+From now on we will need the OpenAI API-key because Weaviate will interact directly with the model.
 
 Let's try a similarity search. We'll use `nearText` search to look for quiz objects most similar to `biology`.
 
@@ -403,6 +265,24 @@ Generative search sends retrieved data from Weaviate to a large language model (
 ::: -->
 
 <hr/>
+
+### Hybrid search
+
+...
+
+### Hybrid search with a filter
+
+...
+
+## Retrieval Augmented Generation
+
+...
+
+### Generative Search
+
+...
+
+### Question Answering
 
 ## Recap
 

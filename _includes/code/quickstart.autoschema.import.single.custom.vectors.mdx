@@ -1,0 +1,42 @@
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import FilteredTextBlock from '@site/src/components/Documentation/FilteredTextBlock';
+
+<Tabs groupId="languages">
+<TabItem value="py" label="Python">
+
+```python
+uuid = client.data_object.create(
+    data_object={
+        'category': 'EXAMPLE',
+        'question': 'What is the coolest vector database?',
+        'answer': 'Weaviate',
+    },
+    class_name='Question',
+    vector=[0.12345] * 1536 # this generates a random vector embedding (for demo purposes) with the same length as OpenAI's Ada model
+)
+
+print(uuid)
+```
+
+</TabItem>
+<TabItem value="ts" label="TypeScript">
+
+```ts
+result = await client.data
+  .creator()
+  .withClassName('Question')
+  .withProperties({
+    category: 'EXAMPLE'
+    question: 'What is the coolest vector database?',
+    answer: 'Weaviate',
+  })
+  .withId('12345678-e64f-5d94-90db-c8cfa3fc1234')
+  .withVector(Array(1536).fill(0.12345)) # this generates a random vector embedding (for demo purposes) with the same length as OpenAI's Ada model
+  .do();
+
+console.log(JSON.stringify(result, null, 2));  // the returned value is the object
+```
+
+</TabItem>
+</Tabs>

@@ -8,6 +8,37 @@ import Badges from '/_includes/badges.mdx';
 
 <Badges/>
 
+## Weaviate without modules
+
+Download [this Docker Compose file](https://configuration.weaviate.io/v2/docker-compose/docker-compose.yml?modules=standalone&runtime=docker-compose&weaviate_version=v||site.weaviate_version||) for Weaviate without modules and save it as `docker-compose.yml`
+
+```bash
+$ curl -o docker-compose.yml "https://configuration.weaviate.io/v2/docker-compose/docker-compose.yml?modules=standalone&runtime=docker-compose&weaviate_version=v||site.weaviate_version||"
+```
+
+Run the container
+
+```bash
+$ docker-compose up -d
+```
+
+Congratulations, Weaviate is now running at localhost:8080 and is ready to be used
+
+## Common module configurations
+
+Download common Docker-compose configurations with modules enabled as `docker-compose.yml`.
+
+* [Weaviate with OpenAI modules](https://configuration.weaviate.io/v2/docker-compose/docker-compose.yml?generative_cohere=false&generative_openai=true&generative_openai_key_approval=yes&generative_palm=false&media_type=text&modules=modules&ner_module=false&openai_key_approval=yes&qna_module=false&ref2vec_centroid=false&reranker_cohere=false&runtime=docker-compose&spellcheck_module=false&sum_module=false&text_module=text2vec-openai&weaviate_version=v||site.weaviate_version||)
+* [Weaviate with Cohere modules](https://configuration.weaviate.io/v2/docker-compose/docker-compose.yml?cohere_key_approval=yes&generative_cohere=true&generative_cohere_key_approval=yes&generative_openai=false&generative_palm=false&media_type=text&modules=modules&ner_module=false&qna_module=false&ref2vec_centroid=false&reranker_cohere=true&reranker_cohere_key_approval=yes&runtime=docker-compose&spellcheck_module=false&sum_module=false&text_module=text2vec-cohere&weaviate_version=v||site.weaviate_version||)
+* [Weaviate with Google PaLM modules](https://configuration.weaviate.io/v2/docker-compose/docker-compose.yml?generative_cohere=false&generative_openai=false&generative_palm=true&generative_palm_key_approval=yes&media_type=text&modules=modules&ner_module=false&palm_key_approval=yes&qna_module=false&ref2vec_centroid=false&reranker_cohere=false&runtime=docker-compose&spellcheck_module=false&sum_module=false&text_module=text2vec-palm&weaviate_version=v||site.weaviate_version||)
+* [Weaviate with Google Hugging Face inference API module](https://configuration.weaviate.io/v2/docker-compose/docker-compose.yml?generative_cohere=false&generative_openai=false&generative_palm=false&huggingface_key_approval=yes&media_type=text&modules=modules&ner_module=false&qna_module=false&ref2vec_centroid=false&reranker_cohere=false&runtime=docker-compose&spellcheck_module=false&sum_module=false&text_module=text2vec-huggingface&weaviate_version=v||site.weaviate_version||)
+
+After downloading the file as `docker-compose.yml`, run it as follows:
+
+```
+$ docker-compose up -d
+```
+
 ## Configurator
 
 You can use the configuration tool below to customize your Weaviate setup for
@@ -19,7 +50,7 @@ import DocsConfigGen from '/_includes/docs-config-gen.mdx';
 
 <DocsConfigGen />
 
-## Example configurations
+## Custom configurations
 
 :::note
 If you are new to Docker (Compose) and containerization, check out our [Docker Introduction for Weaviate Users](https://medium.com/semi-technologies/what-weaviate-users-should-know-about-docker-containers-1601c6afa079).
@@ -61,29 +92,6 @@ services:
 ```
 
 After running a `docker compose up -d`, Docker will mount `/var/weaviate` on the host to the `PERSISTENCE_DATA_PATH` inside the container.
-
-### Weaviate without any modules
-
-An example docker-compose setup for Weaviate without any modules can be found
-below. In this case, no model inference is performed at either import or search
-time. You will need to provide your own vectors (e.g. from an outside ML model)
-at import and search time:
-
-```yaml
-version: '3.4'
-services:
-  weaviate:
-    image: semitechnologies/weaviate:||site.weaviate_version||
-    ports:
-    - 8080:8080
-    restart: on-failure:0
-    environment:
-      QUERY_DEFAULTS_LIMIT: 25
-      AUTHENTICATION_ANONYMOUS_ACCESS_ENABLED: 'true'
-      PERSISTENCE_DATA_PATH: '/var/lib/weaviate'
-      DEFAULT_VECTORIZER_MODULE: 'none'
-      CLUSTER_HOSTNAME: 'node1'
-```
 
 ### Weaviate with the `text2vec-transformers` module
 

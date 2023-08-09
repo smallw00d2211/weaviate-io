@@ -7,22 +7,29 @@ import EndToEndTSCode from '!!raw-loader!/_includes/code/quickstart.autoschema.e
 <Tabs groupId="languages">
 <TabItem value="py" label="Python">
 
-<FilteredTextBlock
-  text={EndToEndPyCode}
-  startMarker="# ===== add schema ====="
-  endMarker="# ===== import data ====="
-  language="py"
-/>
+```python
+class_obj = {
+  "class": "Question",
+  "vectorizer": "text2vec-openai" # Optional if you want to learn how to use Weaviate modules for semantic search, hybrid search, and generative search (retrieval augmented generation).
+}
+
+client.schema.create_class(class_obj)
+```
 
 </TabItem>
 <TabItem value="ts" label="TypeScript">
 
-<FilteredTextBlock
-  text={EndToEndTSCode}
-  startMarker="// Add the schema"
-  endMarker="// END Add the schema"
-  language="ts"
-/>
+```ts
+const classObj = {
+  'class': 'Question',
+  'vectorizer': 'text2vec-openai' // Optional if you want to learn how to use Weaviate modules for semantic search, hybrid search, and generative search (retrieval augmented generation).
+};
+
+async function addSchema() {
+  const res = await client.schema.classCreator().withClass(classObj).do();
+  console.log(res);
+}
+```
 
 </TabItem>
 <TabItem value="go" label="Go">
@@ -43,9 +50,6 @@ func main() {
 		Host:   "some-endpoint.weaviate.network/",  // Replace with your endpoint
 		Scheme: "https",
 		AuthConfig: auth.ApiKey{Value: "YOUR-WEAVIATE-API-KEY"}, // Replace w/ your Weaviate instance API key
-		Headers: map[string]string{
-			"X-HuggingFace-Api-Key": "YOUR-HUGGINGFACE-API-KEY",  // Replace with your inference API key
-		},
 	}
 
 	client, err := weaviate.NewClient(cfg)
@@ -54,17 +58,8 @@ func main() {
 	}
 
 	classObj := &models.Class{
-			Class:      "Question",
-			Vectorizer: "text2vec-huggingface",  // If set to "none" you must always provide vectors yourself. Could be any other "text2vec-*" also.
-			ModuleConfig: map[string]interface{}{
-				"text2vec-huggingface": map[string]interface{}{
-					"model": "sentence-transformers/paraphrase-MiniLM-L6-v2",
-					"options": map[string]interface{}{
-						"waitForModel": true,
-					},
-				},
-			},
-		}
+		Class:      "Question",
+	}
 
 	// add the schema
 	err = client.Schema().ClassCreator().WithClass(classObj).Do(context.Background())
@@ -98,7 +93,6 @@ public class App {
     // we will create the class "Question" and the properties
     WeaviateClass clazz = WeaviateClass.builder()
       .className("Question")
-      .vectorizer("text2vec-huggingface")  // If set to "none" you must always provide vectors yourself. Could be any other "text2vec-*" also.
       .build();
 
     // add the schema
@@ -116,16 +110,7 @@ public class App {
 
 ```bash
 echo '{
-  "class": "Question",
-  "vectorizer": "text2vec-huggingface",
-  "moduleConfig": {
-      "text2vec-huggingface": {
-          "model": "sentence-transformers/all-MiniLM-L6-v2",
-          "options": {
-              "waitForModel": true
-          }
-      }
-  }
+  "class": "Question"
 }' | curl \
   -X POST \
   -H "Content-Type: application/json" \
